@@ -105,16 +105,20 @@ bool ImGui_ImplSDL2_ProcessEvent(const SDL_Event* event)
         }
     case SDL_FINGERDOWN:
         {
-            if (event->tfinger.fingerId == 0 ) {
-                g_FingerPressed = true;
-            }
+            io.MouseDown[0] = true;
+            g_FingerPressed = true;
+            return true;
+        }
+    case SDL_FINGERMOTION:
+        {
+            io.MousePos.x = io.MousePos.x + (io.DisplaySize.x * event->tfinger.dx);
+            io.MousePos.y = io.MousePos.y + (io.DisplaySize.y * event->tfinger.dy);
             return true;
         }
     case SDL_FINGERUP:
         {
-            if (event->tfinger.fingerId == 0 ) {
-                g_FingerPressed = false;
-            }
+            g_FingerPressed = false;
+            io.MouseDown[0] = false;
             return true;
         }
     case SDL_TEXTINPUT:
@@ -261,9 +265,8 @@ static void ImGui_ImplSDL2_UpdateMousePosAndButtons()
         SDL_Finger *arnold = SDL_GetTouchFinger(device, i);
         if (arnold != NULL)
         {
-            if (i == 0)
+            if (i == 0 && g_FingerPressed)
             {
-                io.MouseDown[0] = g_FingerPressed;
                 mx = io.DisplaySize.x * arnold->x;
                 my = io.DisplaySize.y * arnold->y;
                 io.MousePos = ImVec2((float)mx, (float)my);
@@ -272,8 +275,9 @@ static void ImGui_ImplSDL2_UpdateMousePosAndButtons()
             }
         }
     }
-    io.MouseDown[0] = false;
-    io.MousePos = ImVec2((float)mx, (float)my);
+
+    // io.MouseDown[0] = false;
+    // io.MousePos = ImVec2((float)mx, (float)my);
 
 //#if SDL_HAS_CAPTURE_AND_GLOBAL_MOUSE && !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !(defined(__APPLE__) && TARGET_OS_IOS)
 //    SDL_Window* focused_window = SDL_GetKeyboardFocus();
@@ -388,3 +392,29 @@ void ImGui_ImplSDL2_NewFrame(SDL_Window* window)
     // Update game controllers (if enabled and available)
     ImGui_ImplSDL2_UpdateGamepads();
 }
+
+    // case SDL_FINGERDOWN:
+    //     {
+    //         io.MousePos = ImVec2(io.DisplaySize.x * event->tfinger.dx, io.DisplaySize.y * event->tfinger.dy);
+    //         printf(" SDL_FINGERDOWN %f %f\n", io.DisplaySize.x * event->tfinger.dx, io.DisplaySize.y * event->tfinger.dy);
+    //         printf("io.MousePos  %f %f\n", io.MousePos.x, io.MousePos.y);
+    //         io.MouseDown[0] = true;
+    //         return true;
+    //     }
+    // case SDL_FINGERMOTION:
+    //     {
+    //         // io.MousePos.x = io.MousePos.x + event->tfinger.dx;
+    //         // io.MousePos.y = io.MousePos.y + event->tfinger.dy;
+    //         // printf("io.MousePos  %f %f\n", io.MousePos.x, io.MousePos.y);
+    //         // io.MouseDown[0] = true;
+    //         return true;
+    //     }
+    // case SDL_FINGERUP:
+    //     {
+    //         io.MousePos = ImVec2(io.DisplaySize.x * event->tfinger.dx, io.DisplaySize.y * event->tfinger.dy);
+    //         printf("SDL_FINGERUP %f %f\n", io.DisplaySize.x * event->tfinger.dx, io.DisplaySize.y * event->tfinger.dy);
+    //         printf("io.MousePos  %f %f\n", io.MousePos.x, io.MousePos.y);
+    //         io.MouseDown[0] = false;
+    //         return true;
+    //     }
+   
