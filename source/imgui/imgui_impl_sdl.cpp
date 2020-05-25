@@ -105,20 +105,27 @@ bool ImGui_ImplSDL2_ProcessEvent(const SDL_Event* event)
         }
     case SDL_FINGERDOWN:
         {
-            io.MouseDown[0] = true;
-            g_FingerPressed = true;
+            if(event->tfinger.fingerId == 0) {
+                io.MouseDown[0] = true;
+                g_FingerPressed = true;
+            }
             return true;
         }
     case SDL_FINGERMOTION:
         {
-            io.MousePos.x = io.MousePos.x + (io.DisplaySize.x * event->tfinger.dx);
-            io.MousePos.y = io.MousePos.y + (io.DisplaySize.y * event->tfinger.dy);
+
+            if(event->tfinger.fingerId == 0) {
+                io.MousePos.x = io.MousePos.x + (io.DisplaySize.x * event->tfinger.dx);
+                io.MousePos.y = io.MousePos.y + (io.DisplaySize.y * event->tfinger.dy);
+            }
             return true;
         }
     case SDL_FINGERUP:
         {
-            g_FingerPressed = false;
-            io.MouseDown[0] = false;
+            if(event->tfinger.fingerId == 0) {
+                g_FingerPressed = false;
+                io.MouseDown[0] = false;
+            }
             return true;
         }
     case SDL_TEXTINPUT:
