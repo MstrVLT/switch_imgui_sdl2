@@ -119,6 +119,12 @@ int main() {
                     0xE0A0, 0xE0BA,
                     0xE0C0, 0xE0D6,
                     0xE0E0, 0xE0F5,
+                    0xE100, 0xE105,
+                    0xE110, 0xE116,
+                    0xE121, 0xE12C,
+                    0xE130, 0xE13C,
+                    0xE140, 0xE14D,
+                    0xE150, 0xE153,
                     0,
                 };
 
